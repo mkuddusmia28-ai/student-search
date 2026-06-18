@@ -2,129 +2,134 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Search System</title>
 
 <style>
 body{
     font-family: Arial;
-    background:#eef4ff;
-    margin:0;
-}
-
-.container{
-    max-width:500px;
-    margin:50px auto;
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 0 15px rgba(0,0,0,0.15);
+    background:#f2f2f2;
+    padding:20px;
 }
 
 h2{
     text-align:center;
-    color:#0d47a1;
 }
 
 input{
     width:100%;
-    padding:12px;
-    margin-top:10px;
-    border-radius:8px;
-    border:1px solid #ccc;
+    padding:10px;
+    font-size:16px;
+    margin-bottom:15px;
 }
 
-button{
+table{
     width:100%;
-    padding:12px;
-    margin-top:10px;
-    background:#1565c0;
+    border-collapse:collapse;
+    background:white;
+}
+
+th,td{
+    border:1px solid #ddd;
+    padding:8px;
+    font-size:14px;
+    text-align:left;
+}
+
+th{
+    background:#007bff;
     color:white;
-    border:none;
-    border-radius:8px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#0d47a1;
-}
-
-.card{
-    margin-top:20px;
-    background:#f5f9ff;
-    padding:15px;
-    border-left:5px solid #1565c0;
-    border-radius:8px;
-}
-
-.notfound{
-    color:red;
-    margin-top:15px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container">
-<h2>রেজিস্ট্রেশন দিয়ে সার্চ</h2>
+<h2>Student Search System</h2>
 
-<input type="text" id="reg" placeholder="রেজিস্ট্রেশন নাম্বার লিখুন">
-<button onclick="search()">সার্চ</button>
+<input type="text" id="search" placeholder="নাম / রোল / রেজি দিয়ে সার্চ করুন...">
 
-<div id="result"></div>
-</div>
+<table>
+<thead>
+<tr>
+<th>Roll</th>
+<th>Reg No</th>
+<th>Name</th>
+<th>Group</th>
+<th>Session</th>
+</tr>
+</thead>
+
+<tbody id="tableBody"></tbody>
+</table>
 
 <script>
 
 let students = [];
 
-// 👉 GitHub CSV link
 const url = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/refs/heads/main/students.csv";
 
-// CSV load + parse
 fetch(url)
 .then(res => res.text())
 .then(data => {
-
-    const rows = data.trim().split("\n");
-    const headers = rows[0].split("\t");
-
-    for(let i=1;i<rows.length;i++){
-        let cols = rows[i].split("\t");
-
-        let obj = {};
-        headers.forEach((h, index) => {
-            obj[h.trim()] = cols[index] ? cols[index].trim() : "";
-        });
-
-        students.push(obj);
-    }
+    parseCSV(data);
+    renderTable(students);
 });
 
-function search(){
-    let reg = document.getElementById("reg").value.trim();
-    let result = document.getElementById("result");
+function parseCSV(data){
+    let lines = data.split("\n");
 
-    let found = students.find(s => s["REG NO"] === reg);
+    for(let i=1;i<lines.length;i++){
+        let line = lines[i].replace(/\r/g,'').trim();
+        if(!line) continue;
 
-    if(found){
-        result.innerHTML = `
-        <div class="card">
-            <p><b>SL:</b> ${found["SL"]}</p>
-            <p><b>ROLL:</b> ${found["ROLL SEX"]}</p>
-            <p><b>REG NO:</b> ${found["REG NO"]}</p>
-            <p><b>NAME:</b> ${found["CANDIDATE'S NAME"]}</p>
-            <p><b>SESSION:</b> ${found["SESSION"]}</p>
-            <p><b>GROUP:</b> ${found["GROUP TYPE"]}</p>
-            <p><b>SUBJECT:</b> ${found["SUBJECT"]}</p>
-            <p><b>OPTIONAL:</b> ${found["OPTIONAL"]}</p>
-        </div>`;
-    }
-    else{
-        result.innerHTML = `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
+        let cols = line.split(",");
+
+        if(cols.length < 6) continue;
+
+        let roll = cols[1] ? cols[1].replace(/\n/g,' ').replace(/\(F\)|\(M\)/,'').trim() : "";
+        let reg = cols[2] || "";
+        let session = cols[3] || "";
+        let name = cols[4] || "";
+        let group = cols[5] || "";
+
+        students.push({
+            roll,
+            reg,
+            session,
+            name,
+            group
+        });
     }
 }
+
+function renderTable(data){
+    let html = "";
+
+    data.forEach(s=>{
+        html += `
+        <tr>
+            <td>${s.roll}</td>
+            <td>${s.reg}</td>
+            <td>${s.name}</td>
+            <td>${s.group}</td>
+            <td>${s.session}</td>
+        </tr>`;
+    });
+
+    document.getElementById("tableBody").innerHTML = html;
+}
+
+document.getElementById("search").addEventListener("input", function(){
+    let val = this.value.toLowerCase();
+
+    let filtered = students.filter(s =>
+        (s.roll || "").toLowerCase().includes(val) ||
+        (s.reg || "").toLowerCase().includes(val) ||
+        (s.name || "").toLowerCase().includes(val)
+    );
+
+    renderTable(filtered);
+});
 
 </script>
 
