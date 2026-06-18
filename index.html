@@ -2,7 +2,8 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<title>Student Search</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Search System</title>
 
 <style>
 body{
@@ -15,23 +16,37 @@ body{
     max-width:500px;
     margin:50px auto;
     background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.15);
 }
 
-input,button{
+h2{
+    text-align:center;
+    color:#0d47a1;
+}
+
+input{
     width:100%;
-    padding:10px;
+    padding:12px;
     margin-top:10px;
-    font-size:16px;
+    border-radius:8px;
+    border:1px solid #ccc;
 }
 
 button{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
     background:#1565c0;
     color:white;
     border:none;
+    border-radius:8px;
     cursor:pointer;
+}
+
+button:hover{
+    background:#0d47a1;
 }
 
 .card{
@@ -39,6 +54,12 @@ button{
     background:#f5f9ff;
     padding:15px;
     border-left:5px solid #1565c0;
+    border-radius:8px;
+}
+
+.notfound{
+    color:red;
+    margin-top:15px;
 }
 </style>
 </head>
@@ -46,68 +67,62 @@ button{
 <body>
 
 <div class="container">
+<h2>রেজিস্ট্রেশন দিয়ে সার্চ</h2>
 
-<h2>রেজিস্ট্রেশন সার্চ</h2>
-
-<input type="text" id="reg" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
+<input type="text" id="reg" placeholder="রেজিস্ট্রেশন নাম্বার লিখুন">
 <button onclick="search()">সার্চ</button>
 
 <div id="result"></div>
-
 </div>
 
 <script>
 
 let students = [];
 
-// GitHub CSV লিংক
-const url = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/main/students.csv";
+// 👉 GitHub CSV link
+const url = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/refs/heads/main/students.csv";
 
-// CSV লোড করা
+// CSV load + parse
 fetch(url)
 .then(res => res.text())
 .then(data => {
 
-    let rows = data.split("\n");
-
-    let headers = rows[0].split(",");
+    const rows = data.trim().split("\n");
+    const headers = rows[0].split("\t");
 
     for(let i=1;i<rows.length;i++){
-        let cols = rows[i].split(",");
+        let cols = rows[i].split("\t");
 
-        students.push({
-            sl: cols[0],
-            roll: cols[1],
-            sex: cols[2],
-            reg: cols[3],
-            session: cols[4],
-            name: cols[5],
-            group: cols[6],
-            subject: cols[7],
-            optional: cols[8]
+        let obj = {};
+        headers.forEach((h, index) => {
+            obj[h.trim()] = cols[index] ? cols[index].trim() : "";
         });
+
+        students.push(obj);
     }
 });
 
 function search(){
-
     let reg = document.getElementById("reg").value.trim();
     let result = document.getElementById("result");
 
-    let found = students.find(s => s.reg === reg);
+    let found = students.find(s => s["REG NO"] === reg);
 
     if(found){
         result.innerHTML = `
         <div class="card">
-            <p><b>রোল:</b> ${found.roll}</p>
-            <p><b>নাম:</b> ${found.name}</p>
-            <p><b>গ্রুপ:</b> ${found.group}</p>
-            <p><b>সেশন:</b> ${found.session}</p>
-            <p><b>ঐচ্ছিক:</b> ${found.optional}</p>
+            <p><b>SL:</b> ${found["SL"]}</p>
+            <p><b>ROLL:</b> ${found["ROLL SEX"]}</p>
+            <p><b>REG NO:</b> ${found["REG NO"]}</p>
+            <p><b>NAME:</b> ${found["CANDIDATE'S NAME"]}</p>
+            <p><b>SESSION:</b> ${found["SESSION"]}</p>
+            <p><b>GROUP:</b> ${found["GROUP TYPE"]}</p>
+            <p><b>SUBJECT:</b> ${found["SUBJECT"]}</p>
+            <p><b>OPTIONAL:</b> ${found["OPTIONAL"]}</p>
         </div>`;
     }
     else{
-        result.innerHTML = `<p style="color:red;">❌ তথ্য পাওয়া যায়নি</p>`;
+        result.innerHTML = `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
     }
 }
 
