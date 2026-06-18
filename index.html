@@ -2,51 +2,34 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Student Search</title>
-
 <style>
 body{
-    margin:0;
     font-family: Arial;
-    background: linear-gradient(135deg,#e3f2fd,#ffffff);
+    background:#eef4ff;
+    margin:0;
 }
 
 .container{
-    max-width:520px;
+    max-width:500px;
     margin:60px auto;
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 0 15px rgba(0,0,0,0.15);
+    background:#fff;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,0.2);
 }
 
-h2{
-    text-align:center;
-    color:#1565c0;
-}
-
-input{
+input,button{
     width:100%;
     padding:12px;
     margin-top:10px;
-    border:1px solid #ccc;
-    border-radius:8px;
 }
 
 button{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
     background:#1565c0;
     color:white;
     border:none;
-    border-radius:8px;
     cursor:pointer;
-}
-
-button:hover{
-    background:#0d47a1;
 }
 
 .card{
@@ -54,19 +37,6 @@ button:hover{
     padding:15px;
     border-left:5px solid #1565c0;
     background:#f5f9ff;
-    border-radius:8px;
-}
-
-.notfound{
-    color:red;
-    text-align:center;
-    margin-top:15px;
-}
-
-.loading{
-    text-align:center;
-    color:#1565c0;
-    margin-top:15px;
 }
 </style>
 </head>
@@ -74,12 +44,12 @@ button:hover{
 <body>
 
 <div class="container">
-    <h2>রেজিস্ট্রেশন সার্চ</h2>
+<h2>REG NO Search</h2>
 
-    <input type="text" id="reg" placeholder="REG NO লিখুন">
-    <button onclick="searchData()">সার্চ</button>
+<input type="text" id="reg" placeholder="REG NO লিখুন">
+<button onclick="search()">Search</button>
 
-    <div id="result"></div>
+<div id="result"></div>
 </div>
 
 <script>
@@ -87,9 +57,6 @@ button:hover{
 const CSV_URL = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/refs/heads/main/students.csv";
 
 let students = [];
-
-document.getElementById("result").innerHTML =
-"<div class='loading'>ডেটা লোড হচ্ছে...</div>";
 
 fetch(CSV_URL)
 .then(res => res.text())
@@ -99,55 +66,44 @@ fetch(CSV_URL)
 
     for(let i=1;i<rows.length;i++){
 
-        // CSV comma based split
-        let cols = rows[i].split(",");
+        // 🔥 multiple spaces + tabs fix
+        let cols = rows[i].split(/\s+/);
 
-        if(cols.length >= 6){
-
-            students.push({
-                sl: cols[0]?.trim(),
-                rollSex: cols[1]?.trim(),
-                reg: cols[2]?.trim(),
-                session: cols[3]?.trim(),
-                name: cols[4]?.trim(),
-                group: cols[5]?.trim(),
-                subject: cols[6]?.trim(),
-                optional: cols[7]?.trim()
-            });
-        }
+        students.push({
+            sl: cols[0],
+            roll: cols[1],
+            sex: cols[2],
+            reg: cols[3],
+            session: cols[4],
+            name: cols[5],
+            group: cols[6],
+            subject: cols[7],
+            optional: cols[8]
+        });
     }
-
-    document.getElementById("result").innerHTML = "";
-})
-.catch(err => {
-    document.getElementById("result").innerHTML =
-    "<div class='notfound'>❌ ডেটা লোড হয়নি</div>";
 });
 
-function searchData(){
+function search(){
 
     let reg = document.getElementById("reg").value.trim();
-    let result = document.getElementById("result");
 
-    let student = students.find(s => s.reg === reg);
+    // 🔥 extra safe match
+    let student = students.find(s => String(s.reg).trim() === reg);
 
     if(student){
-        result.innerHTML = `
+        document.getElementById("result").innerHTML = `
         <div class="card">
-            <h3>তথ্য পাওয়া গেছে</h3>
-
             <p><b>SL:</b> ${student.sl}</p>
-            <p><b>Roll & Sex:</b> ${student.rollSex}</p>
-            <p><b>REG NO:</b> ${student.reg}</p>
-            <p><b>Name:</b> ${student.name}</p>
-            <p><b>Session:</b> ${student.session}</p>
-            <p><b>Group:</b> ${student.group}</p>
-            <p><b>Subject:</b> ${student.subject}</p>
-            <p><b>Optional:</b> ${student.optional}</p>
+            <p><b>ROLL:</b> ${student.roll}</p>
+            <p><b>REG:</b> ${student.reg}</p>
+            <p><b>NAME:</b> ${student.name}</p>
+            <p><b>SESSION:</b> ${student.session}</p>
+            <p><b>GROUP:</b> ${student.group}</p>
         </div>`;
     }
     else{
-        result.innerHTML = `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
+        document.getElementById("result").innerHTML =
+        "<p style='color:red'>❌ তথ্য পাওয়া যায়নি</p>";
     }
 }
 
