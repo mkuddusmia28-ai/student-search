@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>শিক্ষার্থী অনুসন্ধান</title>
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    background:#f4f6f9;
+    text-align:center;
+    padding:50px 20px;
+}
+
+.container{
+    max-width:400px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 15px rgba(0,0,0,0.1);
+}
+
+h2{
+    color:#1e3a8a;
+}
+
+input{
+    width:90%;
+    padding:12px;
+    margin:10px 0;
+    border:1px solid #ccc;
+    border-radius:8px;
+}
+
+button{
+    padding:12px 20px;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1d4ed8;
+}
+
+.result{
+    margin-top:20px;
+    font-size:18px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>শিক্ষার্থী অনুসন্ধান</h2>
+
+    <input type="text" id="reg" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
+
+    <br>
+
+    <button onclick="searchStudent()">সার্চ</button>
+
+    <div class="result" id="result"></div>
+</div>
+
+<script>
+
+const students = {
+    "123456": {serial:"1", roll:"10"},
+    "123457": {serial:"2", roll:"20"},
+    "123458": {serial:"3", roll:"30"}
+};
+
+function searchStudent(){
+
+    let reg = document.getElementById("reg").value.trim();
+
+    if(students[reg]){
+        document.getElementById("result").innerHTML =
+        "<b>ক্রমিক নং:</b> " + students[reg].serial +
+        "<br><b>রোল:</b> " + students[reg].roll;
+    }
+    else{
+        document.getElementById("result").innerHTML =
+        "<span style='color:red'>তথ্য পাওয়া যায়নি</span>";
+    }
+}
+
+</script>
+
+</body>
+</html>
