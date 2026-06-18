@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<title>Student Search System</title>
+<title>Student Search</title>
 
 <style>
 body{
@@ -25,29 +25,18 @@ h2{
     color:#1565c0;
 }
 
-input{
+input,button{
     width:100%;
     padding:12px;
     margin-top:10px;
-    border:1px solid #ccc;
-    border-radius:8px;
     font-size:16px;
 }
 
 button{
-    width:100%;
-    padding:12px;
-    margin-top:12px;
     background:#1565c0;
     color:white;
     border:none;
     border-radius:8px;
-    font-size:16px;
-    cursor:pointer;
-}
-
-button:hover{
-    background:#0d47a1;
 }
 
 .card{
@@ -59,9 +48,8 @@ button:hover{
 }
 
 .notfound{
-    margin-top:15px;
     color:red;
-    font-weight:bold;
+    margin-top:15px;
 }
 </style>
 </head>
@@ -70,10 +58,10 @@ button:hover{
 
 <div class="container">
 
-<h2>শিক্ষার্থী তথ্য অনুসন্ধান</h2>
+<h2>রেজিস্ট্রেশন সার্চ</h2>
 
 <input type="text" id="reg" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
-<button onclick="search()">🔍 সার্চ</button>
+<button onclick="search()">সার্চ</button>
 
 <div id="result"></div>
 
@@ -83,20 +71,19 @@ button:hover{
 
 let students = [];
 
-// তোমার GitHub CSV লিংক
 const url = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/main/students.csv";
 
-// ডাটা লোড
+// CSV LOAD
 fetch(url)
 .then(res => res.text())
 .then(data => {
 
     let rows = data.trim().split("\n");
 
-    for(let i = 1; i < rows.length; i++){
+    for(let i=1;i<rows.length;i++){
 
-        // TAB বা COMMA দুইটাই সাপোর্ট করবে
-        let cols = rows[i].split(/\t|,/);
+        // 🔥 SAFE SPLIT (multiple spaces / tab / comma)
+        let cols = rows[i].trim().split(/\s{2,}|\t|,/);
 
         students.push({
             sl: cols[0],
@@ -111,7 +98,7 @@ fetch(url)
         });
     }
 
-    console.log("Data Loaded:", students);
+    console.log("Loaded:", students);
 });
 
 function search(){
