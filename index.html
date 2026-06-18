@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<title>Student Search</title>
+<title>Student Live Search</title>
 
 <style>
 body{
@@ -25,17 +25,12 @@ h2{
     color:#1565c0;
 }
 
-input,button{
+input{
     width:100%;
     padding:12px;
     margin-top:10px;
     font-size:16px;
-}
-
-button{
-    background:#1565c0;
-    color:white;
-    border:none;
+    border:1px solid #ccc;
     border-radius:8px;
 }
 
@@ -50,6 +45,7 @@ button{
 .notfound{
     color:red;
     margin-top:15px;
+    text-align:center;
 }
 </style>
 </head>
@@ -58,10 +54,9 @@ button{
 
 <div class="container">
 
-<h2>রেজিস্ট্রেশন সার্চ</h2>
+<h2>🔍 Student Live Search</h2>
 
 <input type="text" id="reg" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
-<button onclick="search()">সার্চ</button>
 
 <div id="result"></div>
 
@@ -73,7 +68,7 @@ let students = [];
 
 const url = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/main/students.csv";
 
-// CSV LOAD
+// CSV load
 fetch(url)
 .then(res => res.text())
 .then(data => {
@@ -82,29 +77,31 @@ fetch(url)
 
     for(let i=1;i<rows.length;i++){
 
-        // 🔥 SAFE SPLIT (multiple spaces / tab / comma)
         let cols = rows[i].trim().split(/\s{2,}|\t|,/);
 
         students.push({
             sl: cols[0],
             roll: cols[1],
-            sex: cols[2],
             reg: cols[3],
-            session: cols[4],
             name: cols[5],
+            session: cols[4],
             group: cols[6],
             subject: cols[7],
             optional: cols[8]
         });
     }
-
-    console.log("Loaded:", students);
 });
 
-function search(){
+// LIVE SEARCH
+document.getElementById("reg").addEventListener("input", function(){
 
-    let reg = document.getElementById("reg").value.trim();
+    let reg = this.value.trim();
     let result = document.getElementById("result");
+
+    if(reg === ""){
+        result.innerHTML = "";
+        return;
+    }
 
     let found = students.find(s => s.reg === reg);
 
@@ -124,7 +121,7 @@ function search(){
     else{
         result.innerHTML = `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
     }
-}
+});
 
 </script>
 
