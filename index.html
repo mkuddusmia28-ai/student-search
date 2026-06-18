@@ -1,117 +1,91 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>শিক্ষার্থী তথ্য অনুসন্ধান</title>
-
 <style>
 body{
     font-family: Arial;
-    background:#eef4ff;
+    background: linear-gradient(135deg,#e3f2fd,#f1f8ff);
     margin:0;
 }
 
+/* container */
 .container{
     max-width:450px;
-    margin:50px auto;
+    margin:60px auto;
     background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    padding:25px;
+    border-radius:16px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    animation: fadeIn 0.5s ease-in-out;
 }
 
+/* heading */
+h2{
+    text-align:center;
+    color:#1565c0;
+    margin-bottom:20px;
+}
+
+/* input */
 input{
     width:100%;
-    padding:10px;
+    padding:12px;
     margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:10px;
+    outline:none;
+    transition:0.3s;
+    font-size:15px;
 }
 
+input:focus{
+    border-color:#1565c0;
+    box-shadow:0 0 5px rgba(21,101,192,0.4);
+}
+
+/* button */
 button{
     width:100%;
-    padding:10px;
-    margin-top:10px;
-    background:#1565c0;
+    padding:12px;
+    margin-top:12px;
+    background:linear-gradient(135deg,#1565c0,#0d47a1);
     color:white;
     border:none;
+    border-radius:10px;
     cursor:pointer;
+    font-size:16px;
+    transition:0.3s;
 }
 
+button:hover{
+    transform:scale(1.03);
+    background:linear-gradient(135deg,#0d47a1,#08306b);
+}
+
+/* result card */
 .card{
     margin-top:20px;
     background:#f5f9ff;
-    padding:15px;
-    border-left:5px solid #1565c0;
+    padding:18px;
+    border-left:6px solid #1565c0;
+    border-radius:10px;
+    box-shadow:0 5px 15px rgba(0,0,0,0.08);
+    animation: slideUp 0.4s ease-in-out;
 }
+
+/* not found */
 .notfound{
-    color:red;
+    color:#d32f2f;
     margin-top:20px;
+    font-weight:bold;
+    text-align:center;
+}
+
+/* animations */
+@keyframes fadeIn{
+    from{opacity:0; transform:translateY(-10px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+@keyframes slideUp{
+    from{opacity:0; transform:translateY(15px);}
+    to{opacity:1; transform:translateY(0);}
 }
 </style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h2>রেজিস্ট্রেশন দিয়ে সার্চ</h2>
-
-<input type="text" id="reg" placeholder="রেজিস্ট্রেশন নাম্বার লিখুন">
-<button onclick="search()">সার্চ</button>
-
-<div id="result"></div>
-
-</div>
-
-<script>
-const students = {
-    "2110873134": {
-        roll: "160562",
-        name: "SANJIDA AKTER MIM",
-        session: "2024-25",
-        group: "SCIENCE",
-        optional: "HIGHER MATHEMATICS"
-    },
-
-    "2110926474": {
-        roll: "160563",
-        name: "JERIN AKTER",
-        session: "2024-25",
-        group: "SCIENCE",
-        optional: "HIGHER MATHEMATICS"
-    },
-
-    "2111748215": {
-        roll: "160564",
-        name: "FARIHA",
-        session: "2024-25",
-        group: "SCIENCE",
-        optional: "HIGHER MATHEMATICS"
-    }
-};
-
-function search(){
-    let reg = document.getElementById("reg").value.trim();
-    let result = document.getElementById("result");
-
-    if(students[reg]){
-        let s = students[reg];
-
-        result.innerHTML = `
-        <div class="card">
-            <h3>তথ্য পাওয়া গেছে</h3>
-            <p><b>রোল:</b> ${s.roll}</p>
-            <p><b>নাম:</b> ${s.name}</p>
-            <p><b>সেশন:</b> ${s.session}</p>
-            <p><b>গ্রুপ:</b> ${s.group}</p>
-            <p><b>ঐচ্ছিক:</b> ${s.optional}</p>
-        </div>`;
-    }
-    else{
-        result.innerHTML = `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
-    }
-}
-</script>
-
-</body>
-</html>
