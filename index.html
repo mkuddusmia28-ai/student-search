@@ -1,126 +1,106 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>শিক্ষার্থী তথ্য অনুসন্ধান</title>
+<title>Student Search</title>
 
 <style>
-body{
-    margin:0;
-    font-family: SolaimanLipi, Arial, sans-serif;
-    background:#eef4ff;
+body {
+    font-family: Arial;
+    margin: 20px;
 }
 
-.header{
-    background:#0d47a1;
-    color:white;
-    text-align:center;
-    padding:20px;
+h2 {
+    text-align: center;
 }
 
-.container{
-    max-width:450px;
-    margin:30px auto;
-    background:white;
-    padding:25px;
-    border-radius:15px;
-    box-shadow:0 0 15px rgba(0,0,0,0.15);
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    font-size: 16px;
 }
 
-input{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    box-sizing:border-box;
-    margin-top:10px;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
 }
 
-button{
-    width:100%;
-    padding:12px;
-    margin-top:15px;
-    border:none;
-    border-radius:8px;
-    background:#1565c0;
-    color:white;
-    font-size:16px;
-    cursor:pointer;
+th, td {
+    border: 1px solid #000;
+    padding: 5px;
+    text-align: center;
 }
 
-button:hover{
-    background:#0d47a1;
-}
-
-.result{
-    margin-top:20px;
-}
-
-.card{
-    background:#f5f9ff;
-    border-left:5px solid #1565c0;
-    padding:15px;
-    border-radius:8px;
-}
-
-.notfound{
-    color:red;
-    font-weight:bold;
-}
-
-.footer{
-    text-align:center;
-    margin-top:20px;
-    color:#666;
+th {
+    background: #f2f2f2;
 }
 </style>
 </head>
 
 <body>
 
-<div class="header">
-    <h2>শিক্ষার্থী তথ্য অনুসন্ধান</h2>
-    <p>রেজিস্ট্রেশন নম্বর দিয়ে অনুসন্ধান করুন</p>
-</div>
+<h2>Student Search (By Registration No)</h2>
 
-<div class="container">
+<input type="text" id="searchBox" placeholder="Enter Registration Number..." onkeyup="searchTable()">
 
-    <label>রেজিস্ট্রেশন নম্বর</label>
+<table id="studentTable">
+<tr>
+<th>SL</th>
+<th>ROLL</th>
+<th>REG NO</th>
+<th>SESSION</th>
+<th>NAME</th>
+<th>GROUP</th>
+<th>OPTIONAL</th>
+</tr>
 
-    <input type="text" id="reg" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
+<tr>
+<td>1</td>
+<td>160562</td>
+<td>2110873134</td>
+<td>2024-25</td>
+<td>SANJIDA AKTER MIM</td>
+<td>SCIENCE</td>
+<td>HIGHER MATHEMATICS</td>
+</tr>
 
-    <button onclick="searchStudent()">🔍 অনুসন্ধান</button>
+<tr>
+<td>2</td>
+<td>160563</td>
+<td>2110926474</td>
+<td>2024-25</td>
+<td>JERIN AKTER</td>
+<td>SCIENCE</td>
+<td>HIGHER MATHEMATICS</td>
+</tr>
 
-    <div class="result" id="result"></div>
+<tr>
+<td>3</td>
+<td>160564</td>
+<td>2111748215</td>
+<td>2024-25</td>
+<td>FARIHA</td>
+<td>SCIENCE</td>
+<td>HIGHER MATHEMATICS</td>
+</tr>
 
-</div>
-
-<div class="footer">
-    © 2026 শিক্ষার্থী অনুসন্ধান সিস্টেম
-</div>
+</table>
 
 <script>
-const students = {
-    "1911164985": {serial:"1", roll:"362340", group:"Humanities"},
-    "123457": {serial:"2", roll:"20"},
-    "123458": {serial:"3", roll:"30"}
-};
+function searchTable() {
+    let input = document.getElementById("searchBox").value.toLowerCase();
+    let table = document.getElementById("studentTable");
+    let rows = table.getElementsByTagName("tr");
 
-function searchStudent(){
+    for (let i = 1; i < rows.length; i++) {
+        let reg = rows[i].getElementsByTagName("td")[2];
 
-    let reg=document.getElementById("reg").value.trim();
-
-    if(students[reg]){
-        document.getElementById("result").innerHTML=
-        `<div class="card">
-        <h3>তথ্য পাওয়া গেছে</h3>
-        <p><b>ক্রমিক নং:</b> ${students[reg].serial}</p>
-        <p><b>রোল:</b> ${students[reg].roll}</p>
-        </div>`;
-    }else{
-        document.getElementById("result").innerHTML=
-        `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
+        if (reg) {
+            let text = reg.textContent || reg.innerText;
+            rows[i].style.display = text.indexOf(input) > -1 ? "" : "none";
+        }
     }
 }
 </script>
