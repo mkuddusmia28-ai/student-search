@@ -2,7 +2,7 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<title>Student Search</title>
+<title>Student Search System</title>
 
 <style>
 body{
@@ -12,26 +12,42 @@ body{
 }
 
 .container{
-    max-width:500px;
+    max-width:520px;
     margin:50px auto;
     background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 0 12px rgba(0,0,0,0.2);
 }
 
-input,button{
+h2{
+    text-align:center;
+    color:#1565c0;
+}
+
+input{
     width:100%;
-    padding:10px;
+    padding:12px;
     margin-top:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
     font-size:16px;
 }
 
 button{
+    width:100%;
+    padding:12px;
+    margin-top:12px;
     background:#1565c0;
     color:white;
     border:none;
+    border-radius:8px;
+    font-size:16px;
     cursor:pointer;
+}
+
+button:hover{
+    background:#0d47a1;
 }
 
 .card{
@@ -39,6 +55,13 @@ button{
     background:#f5f9ff;
     padding:15px;
     border-left:5px solid #1565c0;
+    border-radius:8px;
+}
+
+.notfound{
+    margin-top:15px;
+    color:red;
+    font-weight:bold;
 }
 </style>
 </head>
@@ -47,10 +70,10 @@ button{
 
 <div class="container">
 
-<h2>রেজিস্ট্রেশন সার্চ</h2>
+<h2>শিক্ষার্থী তথ্য অনুসন্ধান</h2>
 
 <input type="text" id="reg" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
-<button onclick="search()">সার্চ</button>
+<button onclick="search()">🔍 সার্চ</button>
 
 <div id="result"></div>
 
@@ -60,20 +83,20 @@ button{
 
 let students = [];
 
-// GitHub CSV লিংক
+// তোমার GitHub CSV লিংক
 const url = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/main/students.csv";
 
-// CSV লোড করা
+// ডাটা লোড
 fetch(url)
 .then(res => res.text())
 .then(data => {
 
-    let rows = data.split("\n");
+    let rows = data.trim().split("\n");
 
-    let headers = rows[0].split(",");
+    for(let i = 1; i < rows.length; i++){
 
-    for(let i=1;i<rows.length;i++){
-        let cols = rows[i].split(",");
+        // TAB বা COMMA দুইটাই সাপোর্ট করবে
+        let cols = rows[i].split(/\t|,/);
 
         students.push({
             sl: cols[0],
@@ -87,6 +110,8 @@ fetch(url)
             optional: cols[8]
         });
     }
+
+    console.log("Data Loaded:", students);
 });
 
 function search(){
@@ -99,15 +124,18 @@ function search(){
     if(found){
         result.innerHTML = `
         <div class="card">
-            <p><b>রোল:</b> ${found.roll}</p>
-            <p><b>নাম:</b> ${found.name}</p>
-            <p><b>গ্রুপ:</b> ${found.group}</p>
-            <p><b>সেশন:</b> ${found.session}</p>
-            <p><b>ঐচ্ছিক:</b> ${found.optional}</p>
+            <p><b>SL:</b> ${found.sl}</p>
+            <p><b>ROLL:</b> ${found.roll}</p>
+            <p><b>REG NO:</b> ${found.reg}</p>
+            <p><b>NAME:</b> ${found.name}</p>
+            <p><b>SESSION:</b> ${found.session}</p>
+            <p><b>GROUP:</b> ${found.group}</p>
+            <p><b>SUBJECT:</b> ${found.subject}</p>
+            <p><b>OPTIONAL:</b> ${found.optional}</p>
         </div>`;
     }
     else{
-        result.innerHTML = `<p style="color:red;">❌ তথ্য পাওয়া যায়নি</p>`;
+        result.innerHTML = `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
     }
 }
 
