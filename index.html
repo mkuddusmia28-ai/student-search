@@ -2,134 +2,110 @@
 <html lang="bn">
 <head>
 <meta charset="UTF-8">
-<title>Student Search System</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>শিক্ষার্থী তথ্য অনুসন্ধান</title>
 
 <style>
 body{
-    font-family: Arial;
-    background:#f2f2f2;
+    font-family: Arial, sans-serif;
+    background:#f5f5f5;
+    text-align:center;
     padding:20px;
 }
-
-h2{
-    text-align:center;
+.container{
+    max-width:600px;
+    margin:auto;
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 0 10px rgba(0,0,0,.1);
 }
-
 input{
-    width:100%;
-    padding:10px;
+    width:80%;
+    padding:12px;
     font-size:16px;
-    margin-bottom:15px;
 }
-
+button{
+    padding:12px 20px;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:10px;
+}
+#result{
+    margin-top:20px;
+    text-align:left;
+}
 table{
     width:100%;
     border-collapse:collapse;
-    background:white;
 }
-
-th,td{
+td{
     border:1px solid #ddd;
     padding:8px;
-    font-size:14px;
-    text-align:left;
-}
-
-th{
-    background:#007bff;
-    color:white;
 }
 </style>
 </head>
-
 <body>
 
-<h2>Student Search System</h2>
+<div class="container">
+    <h2>রেজিস্ট্রেশন নম্বর দিয়ে তথ্য অনুসন্ধান</h2>
 
-<input type="text" id="search" placeholder="নাম / রোল / রেজি দিয়ে সার্চ করুন...">
+    <input type="text" id="regNo" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
+    <br>
+    <button onclick="searchStudent()">সার্চ</button>
 
-<table>
-<thead>
-<tr>
-<th>Roll</th>
-<th>Reg No</th>
-<th>Name</th>
-<th>Group</th>
-<th>Session</th>
-</tr>
-</thead>
+    <div id="result"></div>
+</div>
 
-<tbody id="tableBody"></tbody>
-</table>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <script>
 
-let students = [];
+const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT7K1Ch9iotaAolpOe0PZ003eZ3hl3SddFzm7Zz8si8N0uwQJnnOe6f9ywlmNtwhyi8aoHOLWDhACKc/pub?gid=0&single=true&output=csv";
 
-const url = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/refs/heads/main/students.csv";
+async function searchStudent(){
 
-fetch(url)
-.then(res => res.text())
-.then(data => {
-    parseCSV(data);
-    renderTable(students);
-});
+    const regNo = document.getElementById("regNo").value.trim();
 
-function parseCSV(data){
-    let lines = data.split("\n");
-
-    for(let i=1;i<lines.length;i++){
-        let line = lines[i].replace(/\r/g,'').trim();
-        if(!line) continue;
-
-        let cols = line.split(",");
-
-        if(cols.length < 6) continue;
-
-        let roll = cols[1] ? cols[1].replace(/\n/g,' ').replace(/\(F\)|\(M\)/,'').trim() : "";
-        let reg = cols[2] || "";
-        let session = cols[3] || "";
-        let name = cols[4] || "";
-        let group = cols[5] || "";
-
-        students.push({
-            roll,
-            reg,
-            session,
-            name,
-            group
-        });
+    if(!regNo){
+        alert("রেজিস্ট্রেশন নম্বর লিখুন");
+        return;
     }
-}
 
-function renderTable(data){
-    let html = "";
+    const response = await fetch(csvUrl);
+    const csvText = await response.text();
 
-    data.forEach(s=>{
-        html += `
-        <tr>
-            <td>${s.roll}</td>
-            <td>${s.reg}</td>
-            <td>${s.name}</td>
-            <td>${s.group}</td>
-            <td>${s.session}</td>
-        </tr>`;
-    });
+    const data = Papa.parse(csvText,{
+        header:true,
+        skipEmptyLines:true
+    }).data;
 
-    document.getElementById("tableBody").innerHTML = html;
-}
-
-document.getElementById("search").addEventListener("input", function(){
-    let val = this.value.toLowerCase();
-
-    let filtered = students.filter(s =>
-        (s.roll || "").toLowerCase().includes(val) ||
-        (s.reg || "").toLowerCase().includes(val) ||
-        (s.name || "").toLowerCase().includes(val)
+    const student = data.find(row =>
+        String(row["REG NO"]).trim() === regNo
     );
 
-    renderTable(filtered);
-});
+    const result = document.getElementById("result");
+
+    if(student){
+
+        let html = "<table>";
+
+        for(const key in student){
+            html += `
+            <tr>
+                <td><b>${key}</b></td>
+                <td>${student[key]}</td>
+            </tr>`;
+        }
+
+        html += "</table>";
+
+        result.innerHTML = html;
+
+    }else{
+        result.innerHTML = "<h3>কোন তথ্য পাওয়া যায়নি</h3>";
+    }
+}
 
 </script>
 
