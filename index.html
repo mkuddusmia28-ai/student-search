@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <title>Student Search</title>
 
-<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
-
 <style>
 body{
     font-family: Arial;
@@ -15,7 +13,7 @@ body{
 
 .container{
     max-width:500px;
-    margin:60px auto;
+    margin:50px auto;
     background:white;
     padding:20px;
     border-radius:10px;
@@ -24,8 +22,9 @@ body{
 
 input,button{
     width:100%;
-    padding:12px;
+    padding:10px;
     margin-top:10px;
+    font-size:16px;
 }
 
 button{
@@ -37,9 +36,9 @@ button{
 
 .card{
     margin-top:20px;
+    background:#f5f9ff;
     padding:15px;
     border-left:5px solid #1565c0;
-    background:#f5f9ff;
 }
 </style>
 </head>
@@ -48,10 +47,10 @@ button{
 
 <div class="container">
 
-<h2>REG NO Search</h2>
+<h2>রেজিস্ট্রেশন সার্চ</h2>
 
-<input type="text" id="reg" placeholder="REG NO লিখুন">
-<button onclick="search()">Search</button>
+<input type="text" id="reg" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
+<button onclick="search()">সার্চ</button>
 
 <div id="result"></div>
 
@@ -59,42 +58,56 @@ button{
 
 <script>
 
-const CSV_URL = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/refs/heads/main/students.csv";
-
 let students = [];
 
-// 🔥 PROPER CSV LOADER
-Papa.parse(CSV_URL, {
-    download: true,
-    header: true,
-    complete: function(results) {
-        students = results.data;
-        console.log("Loaded:", students);
+// GitHub CSV লিংক
+const url = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/main/students.csv";
+
+// CSV লোড করা
+fetch(url)
+.then(res => res.text())
+.then(data => {
+
+    let rows = data.split("\n");
+
+    let headers = rows[0].split(",");
+
+    for(let i=1;i<rows.length;i++){
+        let cols = rows[i].split(",");
+
+        students.push({
+            sl: cols[0],
+            roll: cols[1],
+            sex: cols[2],
+            reg: cols[3],
+            session: cols[4],
+            name: cols[5],
+            group: cols[6],
+            subject: cols[7],
+            optional: cols[8]
+        });
     }
 });
 
 function search(){
 
     let reg = document.getElementById("reg").value.trim();
+    let result = document.getElementById("result");
 
-    let student = students.find(s => s["REG NO"] == reg);
+    let found = students.find(s => s.reg === reg);
 
-    if(student){
-        document.getElementById("result").innerHTML = `
+    if(found){
+        result.innerHTML = `
         <div class="card">
-            <p><b>SL:</b> ${student["SL"]}</p>
-            <p><b>ROLL:</b> ${student["ROLL SEX"]}</p>
-            <p><b>REG NO:</b> ${student["REG NO"]}</p>
-            <p><b>NAME:</b> ${student["CANDIDATE'S NAME"]}</p>
-            <p><b>SESSION:</b> ${student["SESSION"]}</p>
-            <p><b>GROUP:</b> ${student["GROUP TYPE"]}</p>
-            <p><b>SUBJECT:</b> ${student["SUBJECT"]}</p>
-            <p><b>OPTIONAL:</b> ${student["OPTIONAL"]}</p>
+            <p><b>রোল:</b> ${found.roll}</p>
+            <p><b>নাম:</b> ${found.name}</p>
+            <p><b>গ্রুপ:</b> ${found.group}</p>
+            <p><b>সেশন:</b> ${found.session}</p>
+            <p><b>ঐচ্ছিক:</b> ${found.optional}</p>
         </div>`;
     }
     else{
-        document.getElementById("result").innerHTML =
-        "<p style='color:red'>❌ তথ্য পাওয়া যায়নি</p>";
+        result.innerHTML = `<p style="color:red;">❌ তথ্য পাওয়া যায়নি</p>`;
     }
 }
 
