@@ -1,117 +1,42 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>শিক্ষার্থী তথ্য অনুসন্ধান</title>
-
-<style>
-body{
-    font-family: Arial;
-    background:#eef4ff;
-    margin:0;
-}
-
-.container{
-    max-width:450px;
-    margin:50px auto;
-    background:white;
-    padding:20px;
-    border-radius:10px;
-    box-shadow:0 0 10px rgba(0,0,0,0.2);
-}
-
-input{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-}
-
-button{
-    width:100%;
-    padding:10px;
-    margin-top:10px;
-    background:#1565c0;
-    color:white;
-    border:none;
-    cursor:pointer;
-}
-
-.card{
-    margin-top:20px;
-    background:#f5f9ff;
-    padding:15px;
-    border-left:5px solid #1565c0;
-}
-.notfound{
-    color:red;
-    margin-top:20px;
-}
-</style>
-</head>
-
-<body>
-
-<div class="container">
-
-<h2>রেজিস্ট্রেশন দিয়ে সার্চ</h2>
-
-<input type="text" id="reg" placeholder="রেজিস্ট্রেশন নাম্বার লিখুন">
-<button onclick="search()">সার্চ</button>
-
-<div id="result"></div>
-
-</div>
-
 <script>
-const students = {
-    "2110873134": {
-        roll: "160562",
-        name: "SANJIDA AKTER MIM",
-        session: "2024-25",
-        group: "SCIENCE",
-        optional: "HIGHER MATHEMATICS"
-    },
+let students = {};
 
-    "2110926474": {
-        roll: "160563",
-        name: "JERIN AKTER",
-        session: "2024-25",
-        group: "SCIENCE",
-        optional: "HIGHER MATHEMATICS"
-    },
+fetch("students.csv")
+.then(res => res.text())
+.then(data => {
+    let rows = data.split("\n");
 
-    "2111748215": {
-        roll: "160564",
-        name: "FARIHA",
-        session: "2024-25",
-        group: "SCIENCE",
-        optional: "HIGHER MATHEMATICS"
+    for(let i=1; i<rows.length; i++){
+        let cols = rows[i].split(",");
+
+        if(cols[0]){
+            students[cols[0]] = {
+                name: cols[1],
+                session: cols[2],
+                group: cols[3],
+                subject: cols[4],
+                optional: cols[5]
+            };
+        }
     }
-};
+});
 
-function search(){
+function searchStudent(){
     let reg = document.getElementById("reg").value.trim();
-    let result = document.getElementById("result");
 
     if(students[reg]){
-        let s = students[reg];
-
-        result.innerHTML = `
-        <div class="card">
-            <h3>তথ্য পাওয়া গেছে</h3>
-            <p><b>রোল:</b> ${s.roll}</p>
-            <p><b>নাম:</b> ${s.name}</p>
-            <p><b>সেশন:</b> ${s.session}</p>
-            <p><b>গ্রুপ:</b> ${s.group}</p>
-            <p><b>ঐচ্ছিক:</b> ${s.optional}</p>
+        document.getElementById("result").innerHTML =
+        `<div class="card">
+        <h3>তথ্য পাওয়া গেছে</h3>
+        <p><b>নাম:</b> ${students[reg].name}</p>
+        <p><b>সেশন:</b> ${students[reg].session}</p>
+        <p><b>গ্রুপ:</b> ${students[reg].group}</p>
+        <p><b>বিষয়:</b> ${students[reg].subject}</p>
+        <p><b>ঐচ্ছিক:</b> ${students[reg].optional}</p>
         </div>`;
-    }
-    else{
-        result.innerHTML = `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
+    } else {
+        document.getElementById("result").innerHTML =
+        `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
     }
 }
 </script>
-
-</body>
-</html>
