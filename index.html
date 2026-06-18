@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Student Search System</title>
+<title>Student Search</title>
 
 <style>
 body{
@@ -13,7 +13,7 @@ body{
 }
 
 .container{
-    max-width:500px;
+    max-width:520px;
     margin:60px auto;
     background:white;
     padding:25px;
@@ -76,7 +76,7 @@ button:hover{
 <div class="container">
     <h2>রেজিস্ট্রেশন সার্চ</h2>
 
-    <input type="text" id="reg" placeholder="রেজিস্ট্রেশন নাম্বার লিখুন">
+    <input type="text" id="reg" placeholder="REG NO লিখুন">
     <button onclick="searchData()">সার্চ</button>
 
     <div id="result"></div>
@@ -84,13 +84,12 @@ button:hover{
 
 <script>
 
-// তোমার GitHub CSV লিংক
 const CSV_URL = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-search/refs/heads/main/students.csv";
 
 let students = [];
 
-// CSV লোড করা
-document.getElementById("result").innerHTML = "<div class='loading'>ডেটা লোড হচ্ছে...</div>";
+document.getElementById("result").innerHTML =
+"<div class='loading'>ডেটা লোড হচ্ছে...</div>";
 
 fetch(CSV_URL)
 .then(res => res.text())
@@ -99,16 +98,21 @@ fetch(CSV_URL)
     let rows = data.trim().split("\n");
 
     for(let i=1;i<rows.length;i++){
+
+        // CSV comma based split
         let cols = rows[i].split(",");
 
-        if(cols.length >= 5){
+        if(cols.length >= 6){
+
             students.push({
-                reg: cols[0].trim(),
-                roll: cols[1].trim(),
-                name: cols[2].trim(),
-                session: cols[3].trim(),
-                group: cols[4].trim(),
-                optional: cols[5] ? cols[5].trim() : ""
+                sl: cols[0]?.trim(),
+                rollSex: cols[1]?.trim(),
+                reg: cols[2]?.trim(),
+                session: cols[3]?.trim(),
+                name: cols[4]?.trim(),
+                group: cols[5]?.trim(),
+                subject: cols[6]?.trim(),
+                optional: cols[7]?.trim()
             });
         }
     }
@@ -131,12 +135,15 @@ function searchData(){
         result.innerHTML = `
         <div class="card">
             <h3>তথ্য পাওয়া গেছে</h3>
-            <p><b>রেজিস্ট্রেশন:</b> ${student.reg}</p>
-            <p><b>রোল:</b> ${student.roll}</p>
-            <p><b>নাম:</b> ${student.name}</p>
-            <p><b>সেশন:</b> ${student.session}</p>
-            <p><b>গ্রুপ:</b> ${student.group}</p>
-            <p><b>ঐচ্ছিক:</b> ${student.optional}</p>
+
+            <p><b>SL:</b> ${student.sl}</p>
+            <p><b>Roll & Sex:</b> ${student.rollSex}</p>
+            <p><b>REG NO:</b> ${student.reg}</p>
+            <p><b>Name:</b> ${student.name}</p>
+            <p><b>Session:</b> ${student.session}</p>
+            <p><b>Group:</b> ${student.group}</p>
+            <p><b>Subject:</b> ${student.subject}</p>
+            <p><b>Optional:</b> ${student.optional}</p>
         </div>`;
     }
     else{
