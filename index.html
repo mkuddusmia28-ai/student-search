@@ -3,6 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <title>Student Search</title>
+
+<script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+
 <style>
 body{
     font-family: Arial;
@@ -13,7 +16,7 @@ body{
 .container{
     max-width:500px;
     margin:60px auto;
-    background:#fff;
+    background:white;
     padding:20px;
     border-radius:10px;
     box-shadow:0 0 10px rgba(0,0,0,0.2);
@@ -44,12 +47,14 @@ button{
 <body>
 
 <div class="container">
+
 <h2>REG NO Search</h2>
 
 <input type="text" id="reg" placeholder="REG NO লিখুন">
 <button onclick="search()">Search</button>
 
 <div id="result"></div>
+
 </div>
 
 <script>
@@ -58,28 +63,13 @@ const CSV_URL = "https://raw.githubusercontent.com/mkuddusmia28-ai/student-searc
 
 let students = [];
 
-fetch(CSV_URL)
-.then(res => res.text())
-.then(data => {
-
-    let rows = data.trim().split("\n");
-
-    for(let i=1;i<rows.length;i++){
-
-        // 🔥 multiple spaces + tabs fix
-        let cols = rows[i].split(/\s+/);
-
-        students.push({
-            sl: cols[0],
-            roll: cols[1],
-            sex: cols[2],
-            reg: cols[3],
-            session: cols[4],
-            name: cols[5],
-            group: cols[6],
-            subject: cols[7],
-            optional: cols[8]
-        });
+// 🔥 PROPER CSV LOADER
+Papa.parse(CSV_URL, {
+    download: true,
+    header: true,
+    complete: function(results) {
+        students = results.data;
+        console.log("Loaded:", students);
     }
 });
 
@@ -87,18 +77,19 @@ function search(){
 
     let reg = document.getElementById("reg").value.trim();
 
-    // 🔥 extra safe match
-    let student = students.find(s => String(s.reg).trim() === reg);
+    let student = students.find(s => s["REG NO"] == reg);
 
     if(student){
         document.getElementById("result").innerHTML = `
         <div class="card">
-            <p><b>SL:</b> ${student.sl}</p>
-            <p><b>ROLL:</b> ${student.roll}</p>
-            <p><b>REG:</b> ${student.reg}</p>
-            <p><b>NAME:</b> ${student.name}</p>
-            <p><b>SESSION:</b> ${student.session}</p>
-            <p><b>GROUP:</b> ${student.group}</p>
+            <p><b>SL:</b> ${student["SL"]}</p>
+            <p><b>ROLL:</b> ${student["ROLL SEX"]}</p>
+            <p><b>REG NO:</b> ${student["REG NO"]}</p>
+            <p><b>NAME:</b> ${student["CANDIDATE'S NAME"]}</p>
+            <p><b>SESSION:</b> ${student["SESSION"]}</p>
+            <p><b>GROUP:</b> ${student["GROUP TYPE"]}</p>
+            <p><b>SUBJECT:</b> ${student["SUBJECT"]}</p>
+            <p><b>OPTIONAL:</b> ${student["OPTIONAL"]}</p>
         </div>`;
     }
     else{
