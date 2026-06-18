@@ -1,91 +1,22 @@
-<style>
-body{
-    font-family: Arial;
-    background: linear-gradient(135deg,#e3f2fd,#f1f8ff);
-    margin:0;
-}
+function searchStudent() {
+    let reg = document.getElementById("reg").value.trim();
 
-/* container */
-.container{
-    max-width:450px;
-    margin:60px auto;
-    background:white;
-    padding:25px;
-    border-radius:16px;
-    box-shadow:0 10px 25px rgba(0,0,0,0.15);
-    animation: fadeIn 0.5s ease-in-out;
-}
+    let student = students.find(s => s.reg === reg);
 
-/* heading */
-h2{
-    text-align:center;
-    color:#1565c0;
-    margin-bottom:20px;
+    if (student) {
+        document.getElementById("result").innerHTML = `
+        <div class="card">
+            <h3>✔ তথ্য পাওয়া গেছে</h3>
+            <p><b>রেজিস্ট্রেশন:</b> ${student.reg}</p>
+            <p><b>নাম:</b> ${student.name}</p>
+            <p><b>রোল:</b> ${student.roll}</p>
+            <p><b>ক্লাস:</b> ${student.class}</p>
+            <p><b>মোবাইল:</b> ${student.phone}</p>
+        </div>
+        `;
+    } else {
+        document.getElementById("result").innerHTML = `
+        <div class="notfound">❌ তথ্য পাওয়া যায়নি</div>
+        `;
+    }
 }
-
-/* input */
-input{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:1px solid #ccc;
-    border-radius:10px;
-    outline:none;
-    transition:0.3s;
-    font-size:15px;
-}
-
-input:focus{
-    border-color:#1565c0;
-    box-shadow:0 0 5px rgba(21,101,192,0.4);
-}
-
-/* button */
-button{
-    width:100%;
-    padding:12px;
-    margin-top:12px;
-    background:linear-gradient(135deg,#1565c0,#0d47a1);
-    color:white;
-    border:none;
-    border-radius:10px;
-    cursor:pointer;
-    font-size:16px;
-    transition:0.3s;
-}
-
-button:hover{
-    transform:scale(1.03);
-    background:linear-gradient(135deg,#0d47a1,#08306b);
-}
-
-/* result card */
-.card{
-    margin-top:20px;
-    background:#f5f9ff;
-    padding:18px;
-    border-left:6px solid #1565c0;
-    border-radius:10px;
-    box-shadow:0 5px 15px rgba(0,0,0,0.08);
-    animation: slideUp 0.4s ease-in-out;
-}
-
-/* not found */
-.notfound{
-    color:#d32f2f;
-    margin-top:20px;
-    font-weight:bold;
-    text-align:center;
-}
-
-/* animations */
-@keyframes fadeIn{
-    from{opacity:0; transform:translateY(-10px);}
-    to{opacity:1; transform:translateY(0);}
-}
-
-@keyframes slideUp{
-    from{opacity:0; transform:translateY(15px);}
-    to{opacity:1; transform:translateY(0);}
-}
-</style>
