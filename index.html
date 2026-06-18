@@ -3,73 +3,104 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>শিক্ষার্থী অনুসন্ধান</title>
+<title>শিক্ষার্থী তথ্য অনুসন্ধান</title>
 
 <style>
 body{
-    font-family: Arial, sans-serif;
-    background:#f4f6f9;
+    margin:0;
+    font-family: SolaimanLipi, Arial, sans-serif;
+    background:#eef4ff;
+}
+
+.header{
+    background:#0d47a1;
+    color:white;
     text-align:center;
-    padding:50px 20px;
+    padding:20px;
 }
 
 .container{
-    max-width:400px;
-    margin:auto;
+    max-width:450px;
+    margin:30px auto;
     background:white;
     padding:25px;
-    border-radius:12px;
-    box-shadow:0 0 15px rgba(0,0,0,0.1);
-}
-
-h2{
-    color:#1e3a8a;
+    border-radius:15px;
+    box-shadow:0 0 15px rgba(0,0,0,0.15);
 }
 
 input{
-    width:90%;
+    width:100%;
     padding:12px;
-    margin:10px 0;
     border:1px solid #ccc;
     border-radius:8px;
+    box-sizing:border-box;
+    margin-top:10px;
 }
 
 button{
-    padding:12px 20px;
-    background:#2563eb;
-    color:white;
+    width:100%;
+    padding:12px;
+    margin-top:15px;
     border:none;
     border-radius:8px;
+    background:#1565c0;
+    color:white;
+    font-size:16px;
     cursor:pointer;
 }
 
 button:hover{
-    background:#1d4ed8;
+    background:#0d47a1;
 }
 
 .result{
     margin-top:20px;
-    font-size:18px;
+}
+
+.card{
+    background:#f5f9ff;
+    border-left:5px solid #1565c0;
+    padding:15px;
+    border-radius:8px;
+}
+
+.notfound{
+    color:red;
+    font-weight:bold;
+}
+
+.footer{
+    text-align:center;
+    margin-top:20px;
+    color:#666;
 }
 </style>
 </head>
 
 <body>
 
+<div class="header">
+    <h2>শিক্ষার্থী তথ্য অনুসন্ধান</h2>
+    <p>রেজিস্ট্রেশন নম্বর দিয়ে অনুসন্ধান করুন</p>
+</div>
+
 <div class="container">
-    <h2>শিক্ষার্থী অনুসন্ধান</h2>
+
+    <label>রেজিস্ট্রেশন নম্বর</label>
 
     <input type="text" id="reg" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
 
-    <br>
-
-    <button onclick="searchStudent()">সার্চ</button>
+    <button onclick="searchStudent()">🔍 অনুসন্ধান</button>
 
     <div class="result" id="result"></div>
+
+</div>
+
+<div class="footer">
+    © 2026 শিক্ষার্থী অনুসন্ধান সিস্টেম
 </div>
 
 <script>
-
 const students = {
     "123456": {serial:"1", roll:"10"},
     "123457": {serial:"2", roll:"20"},
@@ -78,19 +109,20 @@ const students = {
 
 function searchStudent(){
 
-    let reg = document.getElementById("reg").value.trim();
+    let reg=document.getElementById("reg").value.trim();
 
     if(students[reg]){
-        document.getElementById("result").innerHTML =
-        "<b>ক্রমিক নং:</b> " + students[reg].serial +
-        "<br><b>রোল:</b> " + students[reg].roll;
-    }
-    else{
-        document.getElementById("result").innerHTML =
-        "<span style='color:red'>তথ্য পাওয়া যায়নি</span>";
+        document.getElementById("result").innerHTML=
+        `<div class="card">
+        <h3>তথ্য পাওয়া গেছে</h3>
+        <p><b>ক্রমিক নং:</b> ${students[reg].serial}</p>
+        <p><b>রোল:</b> ${students[reg].roll}</p>
+        </div>`;
+    }else{
+        document.getElementById("result").innerHTML=
+        `<div class="notfound">❌ তথ্য পাওয়া যায়নি</div>`;
     }
 }
-
 </script>
 
 </body>
