@@ -167,3 +167,34 @@ async function searchStudent(){
 <p style="text-align:center; margin-top:10px; color:#ff4d4d; font-size:14px; font-weight:bold;">
     📚 পড়াশোনা করছো তো? পড়তে হবে। নকল আর হবে না।
 </p>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<div id="result"></div>
+
+<button onclick="downloadJPG()" id="downloadBtn" style="display:none;">
+📥 JPG ডাউনলোড
+</button>
+if(student){
+
+    document.getElementById("result").innerHTML = `
+    <div id="cardToSave">
+        <table>
+            <tr><td>সিরিয়াল</td><td>${student["SL"] || ""}</td></tr>
+            <tr><td>রোল</td><td>${student["ROLL"] || ""}</td></tr>
+            <tr><td>রেজিস্ট্রেশন নং</td><td>${student["REG NO"] || ""}</td></tr>
+            <tr><td>শিক্ষার্থীর নাম</td><td>${student["CANDIDATE'S NAME"] || ""}</td></tr>
+        </table>
+    </div>
+    `;
+
+    document.getElementById("downloadBtn").style.display = "block";
+}
+function downloadJPG(){
+    const element = document.getElementById("cardToSave");
+
+    html2canvas(element).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "student-info.jpg";
+        link.href = canvas.toDataURL("image/jpeg", 1.0);
+        link.click();
+    });
+}
