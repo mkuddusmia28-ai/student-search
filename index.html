@@ -6,27 +6,33 @@
 <title>শিক্ষার্থী তথ্য অনুসন্ধান</title>
 
 <style>
+
+/* 🌈 Background */
 body{
     font-family: Arial, sans-serif;
-    background:#f0f2f5;
+    background: linear-gradient(135deg, #74ebd5, #9face6);
     margin:0;
     padding:20px;
 }
 
+/* 📦 Container */
 .container{
     max-width:600px;
     margin:auto;
-    background:#fff;
+    background:white;
     padding:25px;
-    border-radius:10px;
-    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.2);
+    border:3px solid #0066cc;
 }
 
+/* Heading */
 h2{
     text-align:center;
     color:#0066cc;
 }
 
+/* Input */
 input{
     width:100%;
     padding:12px;
@@ -36,6 +42,7 @@ input{
     box-sizing:border-box;
 }
 
+/* Buttons */
 button{
     width:100%;
     padding:12px;
@@ -52,6 +59,7 @@ button:hover{
     background:#0052a3;
 }
 
+/* Table */
 table{
     width:100%;
     margin-top:20px;
@@ -69,11 +77,18 @@ td:first-child{
     width:40%;
 }
 
+/* Not found */
 .notfound{
     color:red;
     text-align:center;
     margin-top:20px;
 }
+
+/* Card */
+#cardToSave{
+    margin-top:10px;
+}
+
 </style>
 </head>
 
@@ -104,10 +119,12 @@ td:first-child{
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT7K1Ch9iotaAolpOe0PZ003eZ3hl3SddFzm7Zz8si8N0uwQJnnOe6f9ywlmNtwhyi8aoHOLWDhACKc/pub?gid=0&single=true&output=csv";
 
+/* clean function */
 function clean(str){
     return String(str || "").replace(/\s+/g,"").trim();
 }
 
+/* SEARCH STUDENT */
 async function searchStudent(){
 
     const regNo = document.getElementById("regNo").value.trim();
@@ -139,22 +156,10 @@ async function searchStudent(){
             document.getElementById("result").innerHTML = `
             <div id="cardToSave">
                 <table>
-                    <tr>
-                        <td>সিরিয়াল</td>
-                        <td>${student["SL"] || ""}</td>
-                    </tr>
-                    <tr>
-                        <td>রোল</td>
-                        <td>${student["ROLL"] || ""}</td>
-                    </tr>
-                    <tr>
-                        <td>রেজিস্ট্রেশন নং</td>
-                        <td>${student["REG NO"] || ""}</td>
-                    </tr>
-                    <tr>
-                        <td>শিক্ষার্থীর নাম</td>
-                        <td>${student["CANDIDATE'S NAME"] || ""}</td>
-                    </tr>
+                    <tr><td>সিরিয়াল</td><td>${student["SL"] || ""}</td></tr>
+                    <tr><td>রোল</td><td>${student["ROLL"] || ""}</td></tr>
+                    <tr><td>রেজিস্ট্রেশন নং</td><td>${student["REG NO"] || ""}</td></tr>
+                    <tr><td>শিক্ষার্থীর নাম</td><td>${student["CANDIDATE'S NAME"] || ""}</td></tr>
                 </table>
             </div>
             `;
@@ -172,24 +177,27 @@ async function searchStudent(){
     }
 }
 
+/* FULL PAGE JPG DOWNLOAD */
 function downloadJPG(){
 
-    const element = document.getElementById("cardToSave");
+    const element = document.querySelector(".container");
 
-    html2canvas(element).then(canvas => {
+    html2canvas(element, {
+        scale: 2,
+        useCORS: true,
+        backgroundColor: null
+    }).then(canvas => {
+
         const link = document.createElement("a");
-        link.download = "student-info.jpg";
+        link.download = "student-result.jpg";
         link.href = canvas.toDataURL("image/jpeg", 1.0);
         link.click();
+
     });
 
 }
 
 </script>
-
-<p style="text-align:center; margin-top:10px; color:#ff4d4d; font-size:14px; font-weight:bold;">
-    📚 পড়াশোনা করছো তো? পড়তে হবে। নকল আর হবে না।
-</p>
 
 </body>
 </html>
