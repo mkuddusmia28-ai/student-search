@@ -7,7 +7,6 @@
 
 <style>
 
-/* 🌈 Background */
 body{
     font-family: Arial, sans-serif;
     background: linear-gradient(135deg, #74ebd5, #9face6);
@@ -15,7 +14,6 @@ body{
     padding:20px;
 }
 
-/* 📦 Container */
 .container{
     max-width:600px;
     margin:auto;
@@ -26,13 +24,11 @@ body{
     border:3px solid #0066cc;
 }
 
-/* Heading */
 h2{
     text-align:center;
     color:#0066cc;
 }
 
-/* Input */
 input{
     width:100%;
     padding:12px;
@@ -42,7 +38,6 @@ input{
     box-sizing:border-box;
 }
 
-/* Buttons */
 button{
     width:100%;
     padding:12px;
@@ -59,7 +54,19 @@ button:hover{
     background:#0052a3;
 }
 
-/* Table */
+/* Warning text */
+.notice{
+    text-align:center;
+    margin-top:10px;
+    color:#ff4d4d;
+    font-size:14px;
+    font-weight:bold;
+    background:#fff3f3;
+    padding:8px;
+    border-radius:8px;
+    border:1px solid #ffcccc;
+}
+
 table{
     width:100%;
     margin-top:20px;
@@ -77,14 +84,12 @@ td:first-child{
     width:40%;
 }
 
-/* Not found */
 .notfound{
     color:red;
     text-align:center;
     margin-top:20px;
 }
 
-/* Card */
 #cardToSave{
     margin-top:10px;
 }
@@ -101,22 +106,14 @@ td:first-child{
     <input type="text" id="regNo" placeholder="রেজিস্ট্রেশন নম্বর লিখুন">
 
     <button onclick="searchStudent()">সার্চ করুন</button>
-</script>
-<p style="
-text-align:center;
-margin-top:15px;
-color:#ff4d4d;
-font-size:14px;
-font-weight:bold;
-background:#fff3f3;
-padding:10px;
-border-radius:8px;
-border:1px solid #ffcccc;">
-📚 পড়াশোনা করছো তো? পড়তে হবে। নকল আর হবে না।
-</p>
+
+    <!-- 📌 Notice under button -->
+    <p class="notice">
+        📚 পড়াশোনা করছো তো? পড়তে হবে। নকল আর হবে না।
+    </p>
+
     <div id="result"></div>
 
-    <!-- JPG Download Button -->
     <button onclick="downloadJPG()" id="downloadBtn" style="display:none;">
         📥 JPG ডাউনলোড
     </button>
@@ -131,12 +128,10 @@ border:1px solid #ffcccc;">
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT7K1Ch9iotaAolpOe0PZ003eZ3hl3SddFzm7Zz8si8N0uwQJnnOe6f9ywlmNtwhyi8aoHOLWDhACKc/pub?gid=0&single=true&output=csv";
 
-/* clean function */
 function clean(str){
     return String(str || "").replace(/\s+/g,"").trim();
 }
 
-/* SEARCH STUDENT */
 async function searchStudent(){
 
     const regNo = document.getElementById("regNo").value.trim();
@@ -189,15 +184,13 @@ async function searchStudent(){
     }
 }
 
-/* FULL PAGE JPG DOWNLOAD */
 function downloadJPG(){
 
     const element = document.querySelector(".container");
 
     html2canvas(element, {
         scale: 2,
-        useCORS: true,
-        backgroundColor: null
+        useCORS: true
     }).then(canvas => {
 
         const link = document.createElement("a");
@@ -209,6 +202,7 @@ function downloadJPG(){
 
 }
 
+</script>
 
 </body>
 </html>
