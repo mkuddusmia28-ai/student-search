@@ -76,6 +76,7 @@ td:first-child{
 }
 </style>
 </head>
+
 <body>
 
 <div class="container">
@@ -88,13 +89,24 @@ td:first-child{
 
     <div id="result"></div>
 
+    <!-- JPG Download Button -->
+    <button onclick="downloadJPG()" id="downloadBtn" style="display:none;">
+        📥 JPG ডাউনলোড
+    </button>
+
 </div>
 
+<!-- Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 <script>
 
 const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vT7K1Ch9iotaAolpOe0PZ003eZ3hl3SddFzm7Zz8si8N0uwQJnnOe6f9ywlmNtwhyi8aoHOLWDhACKc/pub?gid=0&single=true&output=csv";
+
+function clean(str){
+    return String(str || "").replace(/\s+/g,"").trim();
+}
 
 async function searchStudent(){
 
@@ -106,6 +118,7 @@ async function searchStudent(){
     }
 
     document.getElementById("result").innerHTML = "অনুসন্ধান করা হচ্ছে...";
+    document.getElementById("downloadBtn").style.display = "none";
 
     try{
 
@@ -117,53 +130,66 @@ async function searchStudent(){
             skipEmptyLines:true
         }).data;
 
-        const student = data.find(
-            row => String(row["REG NO"]).trim() === regNo
+        const student = data.find(row =>
+            clean(row["REG NO"]) === clean(regNo)
         );
 
         if(student){
 
             document.getElementById("result").innerHTML = `
-            <table>
-                <tr>
-                    <td>সিরিয়াল</td>
-                    <td>${student["SL"] || ""}</td>
-                </tr>
-                <tr>
-                    <td>রোল</td>
-                    <td>${student["ROLL"] || ""}</td>
-                </tr>
-                <tr>
-                    <td>রেজিস্ট্রেশন নং</td>
-                    <td>${student["REG NO"] || ""}</td>
-                </tr>
-                <tr>
-                    <td>শিক্ষার্থীর নাম</td>
-                    <td>${student["CANDIDATE'S NAME"] || ""}</td>
-                </tr>
-            </table>
+            <div id="cardToSave">
+                <table>
+                    <tr>
+                        <td>সিরিয়াল</td>
+                        <td>${student["SL"] || ""}</td>
+                    </tr>
+                    <tr>
+                        <td>রোল</td>
+                        <td>${student["ROLL"] || ""}</td>
+                    </tr>
+                    <tr>
+                        <td>রেজিস্ট্রেশন নং</td>
+                        <td>${student["REG NO"] || ""}</td>
+                    </tr>
+                    <tr>
+                        <td>শিক্ষার্থীর নাম</td>
+                        <td>${student["CANDIDATE'S NAME"] || ""}</td>
+                    </tr>
+                </table>
+            </div>
             `;
 
-        }else{
+            document.getElementById("downloadBtn").style.display = "block";
 
+        }else{
             document.getElementById("result").innerHTML =
             '<div class="notfound">কোন তথ্য পাওয়া যায়নি</div>';
-
         }
 
     }catch(error){
-
         document.getElementById("result").innerHTML =
         '<div class="notfound">তথ্য লোড করতে সমস্যা হয়েছে</div>';
-
     }
+}
+
+function downloadJPG(){
+
+    const element = document.getElementById("cardToSave");
+
+    html2canvas(element).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "student-info.jpg";
+        link.href = canvas.toDataURL("image/jpeg", 1.0);
+        link.click();
+    });
 
 }
-</script>
 
-</body>
-</html>
+</script>
 
 <p style="text-align:center; margin-top:10px; color:#ff4d4d; font-size:14px; font-weight:bold;">
     📚 পড়াশোনা করছো তো? পড়তে হবে। নকল আর হবে না।
 </p>
+
+</body>
+</html>
